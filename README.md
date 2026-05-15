@@ -62,7 +62,7 @@ Each sensor in the `sensors` object must define:
 | Key | Type | Required | Description |
 |-----|------|----------|-------------|
 | vhdl_file_path | String | Yes | Path to the sensor's VHDL entity file, relative to `sensorsDirectory`. |
-| icl_blueprint_path | String | Yes | Path to the sensor's ICL blueprint file defining its test interface, relative to `workingDirectory`. |
+| icl_blueprint_path | String | Yes | Path to the sensor's ICL blueprint file defining its test interface, relative to `sensorsDirectory`. |
 
 ## Instance Properties
 
