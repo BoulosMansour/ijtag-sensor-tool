@@ -1,0 +1,64 @@
+{
+  "topLevelEntity": "cpu_top",
+  "workingDirectory": "src",
+  "sensorsDirectory": "sensors",
+  "customComponents": {
+    "advanced_thermal_sensor": "./shared_lib/sensors/thermal_v2.vhd"
+  },
+  "sensors": {
+    "thermal_sensor": {
+      "vhdl_file_path": "thermal_sensor.vhd",
+      "icl_blueprint_path": "../sensor_blueprints.icl"
+    }
+  },
+  "instances": {
+    "thermal_inst_0": {
+      "sensor_name": "thermal_sensor",
+      "generic_maps": {
+        "DATA_WIDTH": "8",
+        "THRESHOLD": "100",
+        "SENSOR_ID": "1",
+        "ENABLE_FILTERING": "true"
+      },
+      "port_maps": {
+        "clk": "clk",
+        "rst_n": "rst_n",
+        "temp_in": "axi_data_in(7 downto 0)",
+        "temp_out": "temp_value",
+        "alert": "temp_alert",
+        "status": "sensor_status",
+        "diag_in_out": "diag_bus",
+        "ijtag_tdi": "open",
+        "ijtag_tdo": "open",
+        "ijtag_tck": "open",
+        "ijtag_tms": "open",
+        "buffered_out": "open"
+      },
+      "tessent_path": "/cpu_top/thermal_inst_0"
+    },
+    "thermal_inst_1": {
+      "sensor_name": "thermal_sensor",
+      "generic_maps": {
+        "DATA_WIDTH": "8",
+        "THRESHOLD": "120",
+        "SENSOR_ID": "2",
+        "ENABLE_FILTERING": "false"
+      },
+      "port_maps": {
+        "clk": "clk",
+        "rst_n": "rst_n",
+        "temp_in": "mem_data_in(7 downto 0)",
+        "temp_out": "temp_sensor",
+        "alert": "sensor_alert",
+        "status": "open",
+        "diag_in_out": "open",
+        "ijtag_tdi": "open",
+        "ijtag_tdo": "open",
+        "ijtag_tck": "open",
+        "ijtag_tms": "open",
+        "buffered_out": "open"
+      },
+        "tessent_path": "/mem_controller/thermal_inst_1"
+    }
+  }
+}
