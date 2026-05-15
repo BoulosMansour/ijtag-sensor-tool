@@ -10,5 +10,6 @@ end comp_b;
 
 architecture rtl of comp_b is
 begin
-    result <= or data_in;
+    
+    result <= '1' when data_in > "10000000" else '0';
 end rtl;

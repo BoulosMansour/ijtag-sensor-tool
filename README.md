@@ -160,4 +160,21 @@ When building the `port map` for an instance, the tool:
 2. Validates that every key in `port_maps` corresponds to an actual port on the entity; mismatches are logged as errors and the instance is skipped.
 3. For any entity port **not** listed in `port_maps`, a warning is logged and the port is automatically mapped to `open`.
 
-This means you only need to list ports you want to connect to design signals. Ports such as standard IJTAG test ports (`ijtag_tdi`, `ijtag_tdo`, `ijtag_tck`, `ijtag_tms`) can either be listed explicitly as `"open"` or simply omitted from `port_maps` — both produce the same result.
+## IJTAG Port Connections
+
+IJTAG ports (`ijtag_tdi`, `ijtag_tdo`, `ijtag_tck`, `ijtag_tms`) **must be explicitly connected** to real signals in `port_maps` — do not map them to `open`.
+
+Tessent's `extract_icl` works by tracing IJTAG signal paths structurally through the VHDL hierarchy. If an IJTAG port is tied to a constant (which `open` produces when a default value is present) or has no structural path to a top-level port, extraction fails.
+
+The correct setup:
+1. Add IJTAG ports to every parent entity that contains a sensor instance.
+2. Connect the sensor's IJTAG ports to those parent entity ports in `port_maps`.
+
+```json
+"port_maps": {
+    "ijtag_tck": "ijtag_tck",
+    "ijtag_tms": "ijtag_tms",
+    "ijtag_tdi": "ijtag_tdi",
+    "ijtag_tdo": "ijtag_tdo"
+}
+```

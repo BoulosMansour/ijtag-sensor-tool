@@ -18,7 +18,12 @@ entity cpu_top is
         axi_valid   : in  std_logic;
         axi_ready   : out std_logic;
         -- Temperature monitoring
-        temp_alert  : out std_logic
+        temp_alert  : out std_logic;
+        -- IJTAG interface
+        ijtag_tck   : in  std_logic;
+        ijtag_tms   : in  std_logic;
+        ijtag_tdi   : in  std_logic;
+        ijtag_tdo   : out std_logic
     );
 end cpu_top;
 
