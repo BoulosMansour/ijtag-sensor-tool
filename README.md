@@ -102,7 +102,10 @@ Edit `config.json` with:
 
 ### 3. Run the Sensor Injector
 
+`sensor_injector.py` must be run from the **project root** — the directory that contains `config.json`. The generated Tessent script uses absolute paths, so Tessent can be invoked from any directory.
+
 ```bash
+# from the project root
 python sensor_injector.py
 ```
 
@@ -113,6 +116,30 @@ This will:
 - Write modified files to `workingDirectory/modified/`
 - Generate a Tessent integration script at `workingDirectory/out/inject_sensors.tcl`
 - Write a detailed run log to `workingDirectory/out/sensor_injector.log`
+
+### 4. Run the Tessent Script
+
+After the injector completes, invoke Tessent. All file references inside the generated TCL (VHDL sources, ICL blueprints, output paths) are absolute, so Tessent can be started from any directory.
+
+```bash
+# from the project root — batch / dofile mode
+tessent -shell -dofile workingDirectory/out/inject_sensors.tcl
+```
+
+Or source it from within an interactive Tessent session that was started at the project root:
+
+```tcl
+source workingDirectory/out/inject_sensors.tcl
+```
+
+Replace `workingDirectory` with the value you set in `config.json` (e.g., `src`).
+
+Tessent will:
+1. Read the modified VHDL files from `workingDirectory/modified/`
+2. Read the ICL blueprint(s) listed in `config.json`
+3. Build the IJTAG network and run design rule checks
+4. Write the final VHDL to `workingDirectory/out/injected_design.vhd`
+5. Write the extracted chip-level ICL to `workingDirectory/out/injected_network.icl`
 
 ## Output Structure
 
