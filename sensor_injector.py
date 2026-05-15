@@ -173,7 +173,7 @@ def generateIJTAGTessentScript():
         if not iclPath:
             logging.error(f"Sensor '{sensorName}' does not have an 'icl_blueprint_path' defined in config.json")
             continue
-        iclFullPath = os.path.abspath(os.path.join(workingDirectory, iclPath)).replace('\\', '/')
+        iclFullPath = os.path.abspath(os.path.join(sensorsDirectory, iclPath)).replace('\\', '/')
         scriptContent += f"read_icl {iclFullPath}\n\n"
 
     # 3. Read the Hardware Design (VHDL) — all modified files are in the flat modified/ directory

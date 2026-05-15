@@ -8,7 +8,7 @@
   "sensors": {
     "thermal_sensor": {
       "vhdl_file_path": "thermal_sensor.vhd",
-      "icl_blueprint_path": "../sensor_blueprints.icl"
+      "icl_blueprint_path": "thermal_sensor_blueprint.icl"
     }
   },
   "instances": {

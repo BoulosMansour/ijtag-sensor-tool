@@ -43,12 +43,15 @@ architecture rtl of mem_controller is
 
     -- SENSOR-DECLARATION: thermal_sensor
 
-    signal alu_result  : std_logic_vector(63 downto 0);
-    signal alu_valid   : std_logic;
-    signal temp_sensor : std_logic_vector(7 downto 0);
+    signal alu_result   : std_logic_vector(63 downto 0);
+    signal alu_valid    : std_logic;
+    signal temp_sensor  : std_logic_vector(7 downto 0);
     signal sensor_alert : std_logic;
+    signal mem_addr_int : std_logic_vector((ADDR_WIDTH - 1) downto 0) := (others => '0');
 
 begin
+
+    mem_addr <= mem_addr_int;
 
     -- ALU instance for address calculation
     alu_inst : complex_alu
@@ -57,7 +60,7 @@ begin
             clk          => clk,
             rst          => rst_n,
             operand_a    => mem_data_in,
-            operand_b    => mem_addr(31 downto 0),
+            operand_b    => mem_addr_int(31 downto 0),
             result       => alu_result,
             result_valid => alu_valid,
             overflow     => open,
