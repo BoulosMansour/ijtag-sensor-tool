@@ -176,7 +176,16 @@ def generateIJTAGTessentScript():
         iclFullPath = os.path.abspath(os.path.join(sensorsDirectory, iclPath)).replace('\\', '/')
         scriptContent += f"read_icl {iclFullPath}\n\n"
 
-    # 3. Read the Hardware Design (VHDL) — all modified files are in the flat modified/ directory
+    # 3. Read the Hardware Design (VHDL)
+    # Sensor entity definitions must be read first so the design files can resolve the component.
+    for sensorName, sensorInfo in sensors.items():
+        sensorVhdlPath = sensorInfo.get("vhdl_file_path", "")
+        if not sensorVhdlPath:
+            logging.error(f"Sensor '{sensorName}' does not have a 'vhdl_file_path' defined in config.json")
+            continue
+        sensorVhdlFullPath = os.path.abspath(os.path.join(sensorsDirectory, sensorVhdlPath)).replace('\\', '/')
+        scriptContent += f"read_vhdl {sensorVhdlFullPath}\n"
+
     for vhdlFile in glob.glob(os.path.join(workingDirectory, "modified", "*.vhd")):
         vhdlFileForTcl = os.path.abspath(vhdlFile).replace('\\', '/')
         scriptContent += f"read_vhdl {vhdlFileForTcl}\n"
@@ -186,10 +195,18 @@ def generateIJTAGTessentScript():
     # 4. Set the Top-Level Entity
     scriptContent += f"set_current_design {topLevelEntity}\n\n"
 
-    # 5. Transition from setup mode to analysis mode (runs design rule checks internally)
+    # 5. Black-box any components referenced in the design but not provided as VHDL source.
+    # Replace -auto with an explicit -modules list if you want to avoid accidentally
+    # black-boxing modules added in future runs.
+    scriptContent += "add_black_boxes -auto\n\n"
+
+    # 6. Declare the design level before entering analysis mode (required by Tessent DFT RTL flow)
+    scriptContent += "set_design_level rtl\n\n"
+
+    # 7. Transition from setup mode to analysis mode (runs design rule checks internally)
     scriptContent += "set_system_mode analysis\n\n"
 
-    # 6. Define the Target Instances
+    # 8. Define the Target Instances
     for instanceName in instances.keys():
         sensorInfo = instances[instanceName]
         tessentPath = sensorInfo.get("tessent_path", "")
@@ -198,20 +215,20 @@ def generateIJTAGTessentScript():
             continue
         scriptContent += f"set_instrument_instances -instances {tessentPath}\n"
 
-    # 7. Create the IJTAG Network
+    # 9. Create the IJTAG Network
     scriptContent += "\ncreate_ijtag_network\n\n"
 
-    # 8. Extract the New Chip-Level ICL
+    # 10. Extract the New Chip-Level ICL
     scriptContent += "extract_icl\n\n"
 
-    # 9. Write the Output Files (Tessent writes these into the same out/ directory)
+    # 11. Write the Output Files (Tessent writes these into the same out/ directory)
     outputDirForTcl = os.path.abspath(outputDir).replace('\\', '/')
     scriptContent += f"# TODO: verify -output flag syntax — may need -vhdl or a positional path argument (run: help write_design)\n"
     scriptContent += f"write_design -output {outputDirForTcl}/injected_design.vhd\n"
     scriptContent += f"# TODO: verify -output flag syntax — may need a positional path argument (run: help write_icl)\n"
     scriptContent += f"write_icl -output {outputDirForTcl}/injected_network.icl\n\n"
 
-    # 10. Finalize the Script
+    # 12. Finalize the Script
     scriptContent += "puts \"Sensor injection completed successfully!\"\n"
 
     # Save the TCL script into out/ alongside the other outputs
