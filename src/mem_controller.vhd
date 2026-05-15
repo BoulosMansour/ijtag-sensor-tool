@@ -21,7 +21,12 @@ entity mem_controller is
         mem_data_out : out std_logic_vector((DATA_WIDTH - 1) downto 0);
         mem_we       : out std_logic;
         mem_re       : out std_logic;
-        mem_busy     : in  std_logic := '0'
+        mem_busy     : in  std_logic := '0';
+        -- IJTAG interface
+        ijtag_tck    : in  std_logic;
+        ijtag_tms    : in  std_logic;
+        ijtag_tdi    : in  std_logic;
+        ijtag_tdo    : out std_logic
     );
 end mem_controller;
 

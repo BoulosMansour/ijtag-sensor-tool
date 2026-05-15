@@ -201,34 +201,22 @@ def generateIJTAGTessentScript():
     scriptContent += "add_black_boxes -auto\n\n"
 
     # 6. Declare the design level before entering analysis mode (required by Tessent DFT RTL flow)
-    scriptContent += "set_design_level rtl\n\n"
+    scriptContent += "set_design_level chip\n\n"
 
     # 7. Transition from setup mode to analysis mode (runs design rule checks internally)
     scriptContent += "set_system_mode analysis\n\n"
 
-    # 8. Define the Target Instances
-    for instanceName in instances.keys():
-        sensorInfo = instances[instanceName]
-        tessentPath = sensorInfo.get("tessent_path", "")
-        if not tessentPath:
-            logging.warning(f"Instance '{instanceName}' does not have a 'tessent_path' defined in config.json; skipping set_instrument_instances")
-            continue
-        scriptContent += f"set_instrument_instances -instances {tessentPath}\n"
-
-    # 9. Create the IJTAG Network
-    scriptContent += "\ncreate_ijtag_network\n\n"
-
-    # 10. Extract the New Chip-Level ICL
+    # 8. Extract the chip-level ICL by traversing the design hierarchy and matching ICL modules.
     scriptContent += "extract_icl\n\n"
 
-    # 11. Write the Output Files (Tessent writes these into the same out/ directory)
+    # 9. Write the Output Files (Tessent writes these into the same out/ directory)
     outputDirForTcl = os.path.abspath(outputDir).replace('\\', '/')
     scriptContent += f"# TODO: verify -output flag syntax — may need -vhdl or a positional path argument (run: help write_design)\n"
     scriptContent += f"write_design -output {outputDirForTcl}/injected_design.vhd\n"
     scriptContent += f"# TODO: verify -output flag syntax — may need a positional path argument (run: help write_icl)\n"
     scriptContent += f"write_icl -output {outputDirForTcl}/injected_network.icl\n\n"
 
-    # 12. Finalize the Script
+    # 10. Finalize the Script
     scriptContent += "puts \"Sensor injection completed successfully!\"\n"
 
     # Save the TCL script into out/ alongside the other outputs

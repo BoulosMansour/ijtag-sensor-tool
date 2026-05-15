@@ -25,11 +25,11 @@ entity thermal_sensor is
         alert    : out std_logic;
         status   : out std_logic_vector(2 downto 0);
 
-        -- IJTAG Functional Ports (should be auto-mapped to open)
-        ijtag_tdi : in  std_logic := '0';
+        -- IJTAG interface ports — must be connected to parent entity IJTAG ports
+        ijtag_tdi : in  std_logic;
         ijtag_tdo : out std_logic;
-        ijtag_tck : in  std_logic := '0';
-        ijtag_tms : in  std_logic := '0';
+        ijtag_tck : in  std_logic;
+        ijtag_tms : in  std_logic;
 
         -- Bidirectional diagnostic port
         diag_in_out : inout std_logic_vector(7 downto 0);
