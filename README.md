@@ -2,6 +2,14 @@
 
 A comprehensive tool for automatically injecting IEEE 1687 (IJTAG) sensors into VHDL designs and generating hierarchical test networks. The tool parses VHDL entities, manages sensor configurations, and generates Tessent scripts for RTL-level sensor integration.
 
+> Built for my MSc thesis at Politecnico di Torino, *Design-Space Exploration of Fault-Tolerance and In-Field Monitoring Techniques for the Klessydra RISC-V Vector Accelerator*. It inserts thermal and activity monitors into the hardened accelerator and builds the on-chip IJTAG access network without manual rewiring.
+
+## Requirements
+
+- Python 3.8 or newer (standard library only, no extra packages)
+- Siemens Tessent, to run the generated `inject_sensors.tcl` script
+- An example design is included: `src/` holds a small CPU hierarchy (`cpu_top`, `complex_alu`, `mem_controller`, …) and `sensors/` a thermal sensor with its ICL blueprint, so you can try the tool end to end.
+
 ## Overview
 
 **ijtag-sensor-tool** provides:
